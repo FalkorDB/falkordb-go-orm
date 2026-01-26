@@ -37,7 +37,7 @@ func (*Company) Labels() []string {
 
 func main() {
 	fmt.Println("FalkorDB Go ORM - Basic Example (Phase 1)")
-	fmt.Println("==========================================\n")
+	fmt.Println("==========================================")
 
 	// Register entities
 	fmt.Println("1. Registering entities...")
@@ -47,7 +47,7 @@ func main() {
 	if err := orm.Register(&Company{}); err != nil {
 		log.Fatal("Failed to register Company:", err)
 	}
-	fmt.Println("   ✓ Entities registered\n")
+	fmt.Println("   ✓ Entities registered")
 
 	// Create mapper
 	mapper := orm.NewMapper()
@@ -107,7 +107,7 @@ func main() {
 	}
 
 	graph := db.SelectGraph("orm_example")
-	fmt.Println("   ✓ Connected to FalkorDB\n")
+	fmt.Println("   ✓ Connected to FalkorDB")
 
 	// Execute CREATE for Alice
 	fmt.Println("5. Executing CREATE query for Alice...")

@@ -55,11 +55,11 @@ func (p *Pageable) Offset() int {
 
 // Page represents a page of results
 type Page[T any] struct {
-	Content       []*T // The page content
-	PageNumber    int  // Current page number (zero-based)
-	PageSize      int  // Number of items per page
+	Content       []*T  // The page content
+	PageNumber    int   // Current page number (zero-based)
+	PageSize      int   // Number of items per page
 	TotalElements int64 // Total number of elements
-	TotalPages    int  // Total number of pages
+	TotalPages    int   // Total number of pages
 }
 
 // NewPage creates a new Page instance

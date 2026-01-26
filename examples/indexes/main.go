@@ -11,13 +11,13 @@ import (
 
 // Product entity with various indexed properties
 type Product struct {
-	ID          *int64  `falkor:"id,generated"`
-	SKU         string  `falkor:"sku,unique,indexed"`
-	Name        string  `falkor:"name,required,indexed"`
-	Description string  `falkor:"description"`
-	Price       float64 `falkor:"price,indexed"`
-	Category    string  `falkor:"category,indexed"`
-	InStock     bool    `falkor:"in_stock"`
+	ID          *int64    `falkor:"id,generated"`
+	SKU         string    `falkor:"sku,unique,indexed"`
+	Name        string    `falkor:"name,required,indexed"`
+	Description string    `falkor:"description"`
+	Price       float64   `falkor:"price,indexed"`
+	Category    string    `falkor:"category,indexed"`
+	InStock     bool      `falkor:"in_stock"`
 	CreatedAt   time.Time `falkor:"created_at"`
 }
 
@@ -39,7 +39,7 @@ func (*Customer) Labels() []string {
 
 func main() {
 	fmt.Println("FalkorDB Go ORM - Advanced Features Example (Phase 7)")
-	fmt.Println("====================================================\n")
+	fmt.Println("====================================================")
 
 	// 1. Connect to FalkorDB
 	fmt.Println("1. Connecting to FalkorDB...")
@@ -53,23 +53,23 @@ func main() {
 	}
 
 	graph := db.SelectGraph("indexes_demo")
-	fmt.Println("   ✓ Connected to FalkorDB\n")
+	fmt.Println("   ✓ Connected to FalkorDB")
 
 	// 2. Clean up previous data
 	fmt.Println("2. Cleaning up previous data...")
 	_, _ = graph.Query("MATCH (n) DELETE n", nil, nil)
-	fmt.Println("   ✓ Cleaned up\n")
+	fmt.Println("   ✓ Cleaned up")
 
 	// 3. Register entities
 	fmt.Println("3. Registering entities...")
 	orm.GetEntityRegistry().Register(&Product{})
 	orm.GetEntityRegistry().Register(&Customer{})
-	fmt.Println("   ✓ Entities registered\n")
+	fmt.Println("   ✓ Entities registered")
 
 	// 4. Validate schemas
 	fmt.Println("4. Validating schemas...")
 	schemaManager := orm.NewSchemaManager(graph)
-	
+
 	validationResult := schemaManager.ValidateSchema([]reflect.Type{
 		reflect.TypeOf(Product{}),
 		reflect.TypeOf(Customer{}),
@@ -194,7 +194,7 @@ func main() {
 	fmt.Println()
 
 	// Summary
-	fmt.Println("✅ Phase 7 advanced features demonstration complete!\n")
+	fmt.Println("✅ Phase 7 advanced features demonstration complete!")
 	fmt.Println("Key capabilities demonstrated:")
 	fmt.Println("  ✓ Index management (create/drop/list)")
 	fmt.Println("  ✓ Schema validation")

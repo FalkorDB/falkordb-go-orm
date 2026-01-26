@@ -36,7 +36,7 @@ func (*Product) Labels() []string {
 
 func main() {
 	fmt.Println("FalkorDB Go ORM - Session & Transactions Example (Phase 5)")
-	fmt.Println("===========================================================\n")
+	fmt.Println("===========================================================")
 
 	// 1. Connect to FalkorDB
 	fmt.Println("1. Connecting to FalkorDB...")
@@ -50,12 +50,12 @@ func main() {
 	}
 
 	graph := db.SelectGraph("session_demo")
-	fmt.Println("   ✓ Connected to FalkorDB\n")
+	fmt.Println("   ✓ Connected to FalkorDB")
 
 	// 2. Clean up previous data
 	fmt.Println("2. Cleaning up previous data...")
 	_, _ = graph.Query("MATCH (n) DELETE n", nil, nil)
-	fmt.Println("   ✓ Cleaned up\n")
+	fmt.Println("   ✓ Cleaned up")
 
 	// Register entities
 	orm.GetEntityRegistry().Register(&Person{})
@@ -79,7 +79,7 @@ func main() {
 	// Demonstrate batch operations
 	demonstrateBatchOperations(graph)
 
-	fmt.Println("\n✅ Phase 5 session demonstration complete!\n")
+	fmt.Println("\n✅ Phase 5 session demonstration complete!")
 	fmt.Println("Key capabilities demonstrated:")
 	fmt.Println("  ✓ Identity map (prevents duplicate entity instances)")
 	fmt.Println("  ✓ Dirty checking (tracks entity changes)")
@@ -133,7 +133,7 @@ func demonstrateIdentityMap(graph *falkordb.Graph) {
 
 	// Other instance should see the change (same memory location)
 	if person2.Age == 31 {
-		fmt.Println("   ✓ Changes reflected in both references (same instance)\n")
+		fmt.Println("   ✓ Changes reflected in both references (same instance)")
 	}
 }
 
@@ -180,7 +180,7 @@ func demonstrateDirtyChecking(graph *falkordb.Graph) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("   ✓ Changes committed\n")
+	fmt.Println("   ✓ Changes committed")
 
 	// Verify changes persisted
 	updated, err := repo.FindByID(*saved.ID)
@@ -189,7 +189,7 @@ func demonstrateDirtyChecking(graph *falkordb.Graph) {
 	}
 	fmt.Printf("   Verified: %s (Age: %d, City: %s)\n", updated.Name, updated.Age, updated.City)
 	if updated.Age == 29 && updated.City == "Boston" {
-		fmt.Println("   ✓ Dirty checking and update successful!\n")
+		fmt.Println("   ✓ Dirty checking and update successful!")
 	}
 }
 
@@ -217,7 +217,7 @@ func demonstrateTransactionCommit(graph *falkordb.Graph) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("   ✓ Transaction committed\n")
+	fmt.Println("   ✓ Transaction committed")
 
 	// Verify entities were saved
 	repo := orm.NewRepository[Person](graph)
@@ -259,16 +259,16 @@ func demonstrateTransactionRollback(graph *falkordb.Graph) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("   ✓ Transaction rolled back\n")
+	fmt.Println("   ✓ Transaction rolled back")
 
 	// Verify entity was NOT saved
 	afterCount, _ := repo.Count()
 	fmt.Printf("   People after rollback: %d\n", afterCount)
 
 	if beforeCount == afterCount {
-		fmt.Println("   ✓ Rollback successful - entity not persisted!\n")
+		fmt.Println("   ✓ Rollback successful - entity not persisted!")
 	} else {
-		fmt.Println("   ✗ Rollback failed - entity was persisted\n")
+		fmt.Println("   ✗ Rollback failed - entity was persisted")
 	}
 }
 
@@ -286,7 +286,7 @@ func demonstrateWithSession(graph *falkordb.Graph) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("   ✓ WithSession auto-committed on success\n")
+	fmt.Println("   ✓ WithSession auto-committed on success")
 
 	// Verify saved
 	repo := orm.NewRepository[Person](graph)
@@ -300,7 +300,7 @@ func demonstrateWithSession(graph *falkordb.Graph) {
 		}
 	}
 	if frankFound {
-		fmt.Println("   ✓ Auto-commit successful!\n")
+		fmt.Println("   ✓ Auto-commit successful!")
 	}
 
 	// Error case - auto rollback
@@ -315,12 +315,12 @@ func demonstrateWithSession(graph *falkordb.Graph) {
 	if err != nil {
 		fmt.Printf("   Expected error: %v\n", err)
 	}
-	fmt.Println("   ✓ WithSession auto-rolled back on error\n")
+	fmt.Println("   ✓ WithSession auto-rolled back on error")
 
 	// Verify not saved
 	afterCount, _ := repo.Count()
 	if beforeCount == afterCount {
-		fmt.Println("   ✓ Auto-rollback successful - Grace not persisted!\n")
+		fmt.Println("   ✓ Auto-rollback successful - Grace not persisted!")
 	}
 }
 
@@ -354,7 +354,7 @@ func demonstrateBatchOperations(graph *falkordb.Graph) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("   ✓ Batch committed\n")
+	fmt.Println("   ✓ Batch committed")
 
 	// Verify all products saved
 	productRepo := orm.NewRepository[Product](graph)
@@ -371,5 +371,5 @@ func demonstrateBatchOperations(graph *falkordb.Graph) {
 		fmt.Printf("      - %s: $%.2f × %d = $%.2f\n", p.Name, p.Price, p.Stock, value)
 	}
 	fmt.Printf("   Total inventory value: $%.2f\n", totalValue)
-	fmt.Println("   ✓ Batch operations successful!\n")
+	fmt.Println("   ✓ Batch operations successful!")
 }

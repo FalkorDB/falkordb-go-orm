@@ -264,9 +264,10 @@ func (r *Repository[T]) ExistsByID(id interface{}) (bool, error) {
 
 // ExecuteDerivedQuery executes a derived query from a method name pattern
 // Example:
-//   results, err := repo.ExecuteDerivedQuery("FindByAgeGreaterThan", 25)
-//   results, err := repo.ExecuteDerivedQuery("FindByNameAndAge", "Alice", 30)
-//   count, err := repo.ExecuteDerivedQuery("CountByAge", 25)
+//
+//	results, err := repo.ExecuteDerivedQuery("FindByAgeGreaterThan", 25)
+//	results, err := repo.ExecuteDerivedQuery("FindByNameAndAge", "Alice", 30)
+//	count, err := repo.ExecuteDerivedQuery("CountByAge", 25)
 func (r *Repository[T]) ExecuteDerivedQuery(methodName string, args ...interface{}) (interface{}, error) {
 	// Parse method name into QuerySpec
 	spec, err := r.queryParser.Parse(methodName)

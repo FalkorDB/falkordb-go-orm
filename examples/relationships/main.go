@@ -109,13 +109,13 @@ func main() {
 
 	// Manually create relationships using Cypher (demonstrating relationship creation)
 	fmt.Println("6. Creating relationships manually...")
-	
+
 	// Alice works for TechCorp
 	createRelQuery := fmt.Sprintf(
 		"MATCH (p:Person) WHERE id(p) = $person_id MATCH (c:Company) WHERE id(c) = $company_id CREATE (p)-[:WORKS_FOR]->(c)",
 	)
 	_, err = graph.Query(createRelQuery, map[string]interface{}{
-		"person_id":  *savedPeople[0].ID, // Alice
+		"person_id":  *savedPeople[0].ID,    // Alice
 		"company_id": *savedCompanies[0].ID, // TechCorp
 	}, nil)
 	if err != nil {
@@ -125,7 +125,7 @@ func main() {
 
 	// Bob works for DataSystems
 	_, err = graph.Query(createRelQuery, map[string]interface{}{
-		"person_id":  *savedPeople[1].ID, // Bob
+		"person_id":  *savedPeople[1].ID,    // Bob
 		"company_id": *savedCompanies[1].ID, // DataSystems
 	}, nil)
 	if err != nil {
@@ -135,7 +135,7 @@ func main() {
 
 	// Charlie works for TechCorp
 	_, err = graph.Query(createRelQuery, map[string]interface{}{
-		"person_id":  *savedPeople[2].ID, // Charlie
+		"person_id":  *savedPeople[2].ID,    // Charlie
 		"company_id": *savedCompanies[0].ID, // TechCorp
 	}, nil)
 	if err != nil {
@@ -145,7 +145,7 @@ func main() {
 
 	// Create KNOWS relationships (friendships)
 	knowsRelQuery := "MATCH (p1:Person) WHERE id(p1) = $person1_id MATCH (p2:Person) WHERE id(p2) = $person2_id CREATE (p1)-[:KNOWS]->(p2)"
-	
+
 	// Alice knows Bob
 	_, err = graph.Query(knowsRelQuery, map[string]interface{}{
 		"person1_id": *savedPeople[0].ID,
@@ -189,7 +189,7 @@ func main() {
 
 	// Demonstrate relationship queries using raw Cypher
 	fmt.Println("7. Querying relationships...")
-	
+
 	// Find Alice's friends
 	fmt.Println()
 	fmt.Println("   a) Finding Alice's friends (KNOWS relationship)...")
@@ -285,14 +285,14 @@ func main() {
 			log.Fatal(err)
 		}
 		aliceCompany := company.(*Company)
-		fmt.Printf("      - Alice works for: %s (Industry: %s, Founded: %d)\n", 
+		fmt.Printf("      - Alice works for: %s (Industry: %s, Founded: %d)\n",
 			aliceCompany.Name, aliceCompany.Industry, aliceCompany.Founded)
 	}
 	fmt.Println()
 
 	// Demonstrate path queries
 	fmt.Println("8. Path queries (multi-hop relationships)...")
-	
+
 	// Find friends of Alice's friends (2-hop)
 	fmt.Println("   a) Friends of Alice's friends (2-hop)...")
 	friendsOfFriendsQuery := `
@@ -357,14 +357,14 @@ func main() {
 
 	// Statistics
 	fmt.Println("9. Relationship statistics...")
-	
+
 	// Count total KNOWS relationships
 	countKnowsQuery := "MATCH ()-[r:KNOWS]->() RETURN count(r) as count"
 	result, err = graph.Query(countKnowsQuery, nil, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
-	
+
 	if result.Next() {
 		record := result.Record()
 		count, _ := record.GetByIndex(0)
@@ -377,7 +377,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	
+
 	if result.Next() {
 		record := result.Record()
 		count, _ := record.GetByIndex(0)
@@ -432,4 +432,3 @@ func main() {
 	fmt.Println("  - RelationshipManager for relationship operations")
 	fmt.Println("  - Support for 3 directions: OUTGOING, INCOMING, BOTH")
 }
-

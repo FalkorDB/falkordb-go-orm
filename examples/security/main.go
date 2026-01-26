@@ -11,13 +11,13 @@ import (
 
 // Employee entity with sensitive data
 type Employee struct {
-	ID       *int64  `falkor:"id,generated"`
-	Name     string  `falkor:"name,required"`
-	Email    string  `falkor:"email,unique"`
-	Position string  `falkor:"position"`
-	Salary   float64 `falkor:"salary"` // Sensitive
-	SSN      string  `falkor:"ssn"`    // Very sensitive
-	Department string `falkor:"department"`
+	ID         *int64  `falkor:"id,generated"`
+	Name       string  `falkor:"name,required"`
+	Email      string  `falkor:"email,unique"`
+	Position   string  `falkor:"position"`
+	Salary     float64 `falkor:"salary"` // Sensitive
+	SSN        string  `falkor:"ssn"`    // Very sensitive
+	Department string  `falkor:"department"`
 }
 
 func (*Employee) Labels() []string {
@@ -26,7 +26,7 @@ func (*Employee) Labels() []string {
 
 func main() {
 	fmt.Println("FalkorDB Go ORM - RBAC Security Example (Phase 6)")
-	fmt.Println("=================================================\n")
+	fmt.Println("=================================================")
 
 	// 1. Connect to FalkorDB
 	fmt.Println("1. Connecting to FalkorDB...")
@@ -40,12 +40,12 @@ func main() {
 	}
 
 	graph := db.SelectGraph("security_demo")
-	fmt.Println("   ✓ Connected to FalkorDB\n")
+	fmt.Println("   ✓ Connected to FalkorDB")
 
 	// 2. Clean up previous data
 	fmt.Println("2. Cleaning up previous data...")
 	_, _ = graph.Query("MATCH (n) DELETE n", nil, nil)
-	fmt.Println("   ✓ Cleaned up\n")
+	fmt.Println("   ✓ Cleaned up")
 
 	// 3. Register entities
 	fmt.Println("3. Registering entities...")
@@ -53,7 +53,7 @@ func main() {
 	orm.GetEntityRegistry().Register(&security.User{})
 	orm.GetEntityRegistry().Register(&security.Role{})
 	orm.GetEntityRegistry().Register(&security.Privilege{})
-	fmt.Println("   ✓ Entities registered\n")
+	fmt.Println("   ✓ Entities registered")
 
 	// 4. Configure security metadata for Employee
 	fmt.Println("4. Configuring security metadata...")
@@ -72,12 +72,12 @@ func main() {
 	fmt.Println("      - Read roles: reader, hr, admin")
 	fmt.Println("      - Write roles: hr, admin")
 	fmt.Println("      - Salary hidden from: reader")
-	fmt.Println("      - SSN hidden from: reader, hr\n")
+	fmt.Println("      - SSN hidden from: reader, hr")
 
 	// 5. Create RBAC manager
 	fmt.Println("5. Setting up RBAC manager...")
 	manager := security.NewRBACManager(graph)
-	fmt.Println("   ✓ RBAC manager created\n")
+	fmt.Println("   ✓ RBAC manager created")
 
 	// 6. Create roles
 	fmt.Println("6. Creating roles...")
@@ -100,7 +100,7 @@ func main() {
 	manager.AssignRole("charlie", "admin")
 	fmt.Println("   ✓ alice: reader")
 	fmt.Println("   ✓ bob: hr")
-	fmt.Println("   ✓ charlie: admin\n")
+	fmt.Println("   ✓ charlie: admin")
 
 	// 9. Grant privileges
 	fmt.Println("9. Granting privileges...")
@@ -111,12 +111,12 @@ func main() {
 	manager.GrantPrivilege("admin", security.ActionWrite, security.ResourceTypeNode, "*")
 	manager.GrantPrivilege("admin", security.ActionCreate, security.ResourceTypeNode, "*")
 	manager.GrantPrivilege("admin", security.ActionDelete, security.ResourceTypeNode, "*")
-	fmt.Println("   ✓ Privileges granted to roles\n")
+	fmt.Println("   ✓ Privileges granted to roles")
 
 	// 10. Create sample employees (as admin)
 	fmt.Println("10. Creating sample employees...")
 	employeeRepo := orm.NewRepository[Employee](graph)
-	
+
 	employees := []*Employee{
 		{Name: "John Doe", Email: "john@company.com", Position: "Engineer", Salary: 85000, SSN: "123-45-6789", Department: "Engineering"},
 		{Name: "Jane Smith", Email: "jane@company.com", Position: "Manager", Salary: 105000, SSN: "987-65-4321", Department: "Management"},
@@ -127,7 +127,7 @@ func main() {
 	fmt.Printf("   ✓ Created %d employees\n\n", len(saved))
 
 	// 11. Demonstrate security contexts
-	fmt.Println("11. Testing security with different user contexts...\n")
+	fmt.Println("11. Testing security with different user contexts...")
 
 	// Create security contexts (simplified - using manual role assignment for demo)
 	aliceCtx := createTestContext(graph, alice, []string{"reader"})
@@ -147,7 +147,7 @@ func main() {
 	testAsUser(graph, charlieCtx, "Charlie")
 
 	// 12. Test permission denials
-	fmt.Println("\n12. Testing permission denials...\n")
+	fmt.Println("\n12. Testing permission denials...")
 
 	// Alice tries to create (should fail)
 	fmt.Println("    a) Alice (reader) trying to create employee:")
@@ -181,7 +181,7 @@ func main() {
 	}
 
 	// 13. Summary
-	fmt.Println("\n✅ Phase 6 RBAC demonstration complete!\n")
+	fmt.Println("\n✅ Phase 6 RBAC demonstration complete!")
 	fmt.Println("Key capabilities demonstrated:")
 	fmt.Println("  ✓ User and role management")
 	fmt.Println("  ✓ Privilege assignment (READ, WRITE, CREATE, DELETE)")
@@ -195,12 +195,12 @@ func main() {
 func createTestContext(graph *falkordb.Graph, user *security.User, roles []string) *security.SecurityContext {
 	// Create context
 	ctx := &security.SecurityContext{}
-	
+
 	// Manually set roles for demo (in production, would load from graph)
 	for _, role := range roles {
 		ctx.AddRole(role)
 	}
-	
+
 	// Add privileges based on roles
 	if containsRole(roles, "reader") {
 		ctx.AddPrivilege(&security.Privilege{
@@ -210,7 +210,7 @@ func createTestContext(graph *falkordb.Graph, user *security.User, roles []strin
 			GrantType:     security.GrantTypeGrant,
 		})
 	}
-	
+
 	if containsRole(roles, "hr") {
 		ctx.AddPrivilege(&security.Privilege{
 			Action:        security.ActionRead,
@@ -231,7 +231,7 @@ func createTestContext(graph *falkordb.Graph, user *security.User, roles []strin
 			GrantType:     security.GrantTypeGrant,
 		})
 	}
-	
+
 	if containsRole(roles, "admin") {
 		ctx.AddPrivilege(&security.Privilege{
 			Action:        security.ActionRead,
@@ -258,7 +258,7 @@ func createTestContext(graph *falkordb.Graph, user *security.User, roles []strin
 			GrantType:     security.GrantTypeGrant,
 		})
 	}
-	
+
 	return ctx
 }
 
@@ -273,25 +273,25 @@ func containsRole(roles []string, role string) bool {
 
 func testAsUser(graph *falkordb.Graph, ctx *security.SecurityContext, userName string) {
 	secureRepo := security.NewSecureRepository[Employee](graph, ctx)
-	
+
 	employees, err := secureRepo.FindAll()
 	if err != nil {
 		fmt.Printf("       ✗ Access denied: %v\n", err)
 		return
 	}
-	
+
 	fmt.Printf("       ✓ Found %d employees:\n", len(employees))
 	for _, emp := range employees {
 		fmt.Printf("          - %s (%s)\n", emp.Name, emp.Position)
 		fmt.Printf("            Email: %s, Dept: %s\n", emp.Email, emp.Department)
-		
+
 		// Check salary visibility
 		if emp.Salary > 0 {
 			fmt.Printf("            Salary: $%.2f\n", emp.Salary)
 		} else {
 			fmt.Printf("            Salary: [HIDDEN]\n")
 		}
-		
+
 		// Check SSN visibility
 		if emp.SSN != "" {
 			fmt.Printf("            SSN: %s\n", emp.SSN)

@@ -23,7 +23,7 @@ func (*Person) Labels() []string {
 
 func main() {
 	fmt.Println("FalkorDB Go ORM - Repository Pattern Example (Phase 2)")
-	fmt.Println("=======================================================\n")
+	fmt.Println("=======================================================")
 
 	// Connect to FalkorDB
 	fmt.Println("1. Connecting to FalkorDB...")
@@ -37,17 +37,17 @@ func main() {
 	}
 
 	graph := db.SelectGraph("repository_example")
-	fmt.Println("   ✓ Connected to FalkorDB\n")
+	fmt.Println("   ✓ Connected to FalkorDB")
 
 	// Create repository
 	fmt.Println("2. Creating Person repository...")
 	repo := orm.NewRepository[Person](graph)
-	fmt.Println("   ✓ Repository created\n")
+	fmt.Println("   ✓ Repository created")
 
 	// Clean up previous data
 	fmt.Println("3. Cleaning up previous data...")
 	repo.DeleteAllEntities()
-	fmt.Println("   ✓ Cleaned up\n")
+	fmt.Println("   ✓ Cleaned up")
 
 	// Example 1: Save entities
 	fmt.Println("4. Saving entities...")

@@ -81,7 +81,7 @@ func (b *QueryBuilder) BuildMatchWithCondition(metadata *EntityMetadata, propert
 func (b *QueryBuilder) BuildMatchWithConditions(metadata *EntityMetadata, conditions []WhereCondition, logicalOp string) (string, map[string]interface{}) {
 	labelsStr := metadata.PrimaryLabel
 	params := make(map[string]interface{})
-	
+
 	whereClauses := make([]string, 0, len(conditions))
 	for i, cond := range conditions {
 		paramName := fmt.Sprintf("param_%d", i)
@@ -89,7 +89,7 @@ func (b *QueryBuilder) BuildMatchWithConditions(metadata *EntityMetadata, condit
 		whereClauses = append(whereClauses, clause)
 		params[paramName] = cond.Value
 	}
-	
+
 	whereStr := strings.Join(whereClauses, fmt.Sprintf(" %s ", logicalOp))
 	cypher := fmt.Sprintf("MATCH (n:%s) WHERE %s RETURN n", labelsStr, whereStr)
 	return cypher, params
@@ -267,20 +267,20 @@ func (qb *QueryBuilder) buildCondition(condition Condition, paramIndex *int, arg
 func (b *QueryBuilder) BuildMatchWithPagination(metadata *EntityMetadata, page, size int, sortBy, direction string) (string, map[string]interface{}) {
 	labelsStr := metadata.PrimaryLabel
 	skip := page * size
-	
+
 	var cypher string
 	if sortBy != "" {
 		dir := "ASC"
 		if strings.ToUpper(direction) == "DESC" {
 			dir = "DESC"
 		}
-		cypher = fmt.Sprintf("MATCH (n:%s) RETURN n ORDER BY n.%s %s SKIP %d LIMIT %d", 
+		cypher = fmt.Sprintf("MATCH (n:%s) RETURN n ORDER BY n.%s %s SKIP %d LIMIT %d",
 			labelsStr, sortBy, dir, skip, size)
 	} else {
-		cypher = fmt.Sprintf("MATCH (n:%s) RETURN n SKIP %d LIMIT %d", 
+		cypher = fmt.Sprintf("MATCH (n:%s) RETURN n SKIP %d LIMIT %d",
 			labelsStr, skip, size)
 	}
-	
+
 	params := map[string]interface{}{}
 	return cypher, params
 }
@@ -368,10 +368,10 @@ func (q *QueryBuilderChain) Skip(skip int) *QueryBuilderChain {
 func (q *QueryBuilderChain) Build() (string, map[string]interface{}) {
 	labelsStr := q.metadata.PrimaryLabel
 	params := make(map[string]interface{})
-	
+
 	// Start with MATCH
 	parts := []string{fmt.Sprintf("MATCH (n:%s)", labelsStr)}
-	
+
 	// Add WHERE clause if conditions exist
 	if len(q.conditions) > 0 {
 		whereClauses := make([]string, 0, len(q.conditions))
@@ -384,10 +384,10 @@ func (q *QueryBuilderChain) Build() (string, map[string]interface{}) {
 		whereStr := strings.Join(whereClauses, fmt.Sprintf(" %s ", q.logicalOp))
 		parts = append(parts, "WHERE", whereStr)
 	}
-	
+
 	// Add RETURN
 	parts = append(parts, "RETURN n")
-	
+
 	// Add ORDER BY if specified
 	if len(q.orderBy) > 0 {
 		orderClauses := make([]string, 0, len(q.orderBy))
@@ -396,17 +396,17 @@ func (q *QueryBuilderChain) Build() (string, map[string]interface{}) {
 		}
 		parts = append(parts, "ORDER BY", strings.Join(orderClauses, ", "))
 	}
-	
+
 	// Add SKIP if specified
 	if q.skip > 0 {
 		parts = append(parts, fmt.Sprintf("SKIP %d", q.skip))
 	}
-	
+
 	// Add LIMIT if specified
 	if q.limit > 0 {
 		parts = append(parts, fmt.Sprintf("LIMIT %d", q.limit))
 	}
-	
+
 	cypher := strings.Join(parts, " ")
 	return cypher, params
 }

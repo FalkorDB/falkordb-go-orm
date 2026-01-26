@@ -303,21 +303,21 @@ func main() {
 	// Test query spec caching
 	fmt.Println("7. Testing query spec caching...")
 	parser2 := orm.NewQueryParser()
-	
+
 	// First parse
 	_, err = parser2.Parse("FindByAgeGreaterThan")
 	if err != nil {
 		log.Fatal(err)
 	}
 	fmt.Println("   ✓ First parse: cached")
-	
+
 	// Second parse (from cache)
 	_, err = parser2.Parse("FindByAgeGreaterThan")
 	if err != nil {
 		log.Fatal(err)
 	}
 	fmt.Println("   ✓ Second parse: retrieved from cache")
-	
+
 	// Verify cache by clearing and parsing again
 	parser2.ClearCache()
 	_, err = parser2.Parse("FindByAgeGreaterThan")
@@ -329,14 +329,14 @@ func main() {
 
 	// Demonstrate type safety
 	fmt.Println("8. Demonstrating type safety...")
-	
+
 	// This will work
 	result, err = repo.ExecuteDerivedQuery("FindByAge", 28)
 	if err != nil {
 		log.Fatal(err)
 	}
 	fmt.Printf("   ✓ Type-safe query executed successfully (found %d results)\n", len(result.([]*Person)))
-	
+
 	// This will fail with wrong argument count
 	_, err = repo.ExecuteDerivedQuery("FindByNameAndAge", "Alice") // Missing age argument
 	if err != nil {

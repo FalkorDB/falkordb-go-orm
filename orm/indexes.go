@@ -172,7 +172,7 @@ func (m *IndexManager) ListIndexes(label string) ([]IndexInfo, error) {
 
 	for result.Next() {
 		record := result.Record()
-		
+
 		// Parse index information from result
 		// Format varies by FalkorDB version, this is a simplified parser
 		indexLabel, _ := record.GetByIndex(0)

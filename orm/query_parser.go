@@ -253,7 +253,7 @@ func (p *QueryParser) parse(methodName string) (*QuerySpec, error) {
 	// Parse conditions (properties and operators)
 	// Split by And/Or - but only if they are logical operators, not part of operator names
 	var conditionParts []string
-	
+
 	// Try to determine if And/Or is a logical operator or part of an operator name
 	// We do this by trying to parse the whole thing as a single condition first
 	singleCondition, err := p.parseCondition(remainder)
@@ -336,7 +336,7 @@ func (p *QueryParser) parseOrdering(orderPart string) ([]OrderClause, error) {
 		return nil, fmt.Errorf("empty ordering specification")
 	}
 
-		// Split by And for multiple order clauses
+	// Split by And for multiple order clauses
 	parts := splitByLogicalOperator(orderPart, "And")
 	var ordering []OrderClause
 
@@ -379,7 +379,7 @@ func splitByLogicalOperator(s string, keyword string) []string {
 			isWordBoundary := i+len(keyword) >= len(s) || isUpper(rune(s[i+len(keyword)]))
 			isPartOfOperator := (keyword == "And" && strings.HasSuffix(current, "Than")) ||
 				(keyword == "Or" && (i+len(keyword) < len(s) && s[i+len(keyword):i+len(keyword)+5] == "Equal"))
-			
+
 			if isWordBoundary && !isPartOfOperator {
 				if current != "" {
 					parts = append(parts, current)
