@@ -1,0 +1,38 @@
+run:
+  timeout: 5m
+  go: '1.21'
+
+linters:
+  enable:
+    - gofmt
+    - govet
+    - staticcheck
+    - unused
+    - gosimple
+    - ineffassign
+    - typecheck
+    - errcheck
+    - misspell
+    - unconvert
+    - unparam
+    - gocyclo
+    - gocritic
+
+linters-settings:
+  gocyclo:
+    min-complexity: 15
+  govet:
+    check-shadowing: true
+  misspell:
+    locale: US
+
+issues:
+  exclude-rules:
+    # Exclude some linters from running on tests files
+    - path: _test\.go
+      linters:
+        - gocyclo
+        - errcheck
+        - unparam
+  max-issues-per-linter: 0
+  max-same-issues: 0
