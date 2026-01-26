@@ -1,5 +1,7 @@
 # CI/CD Configuration
 
+Note: this file documents CI/CD for contributors. The project overview is in the repository root `README.md`.
+
 This directory contains GitHub Actions workflows and configuration for the FalkorDB Go ORM project.
 
 ## Workflows
