@@ -91,16 +91,16 @@ Note: property-level filtering is enforced by `SecureRepository` today; row-leve
 
 ## Documentation
 
-- **API specifications**: `API.md`
-- Tutorial / guided walkthrough: `TUTORIAL.md`
-- Architecture / internals: `ARCHITECTURE.md`
-- Migration notes: `MIGRATION.md`
-- Contributing guide: `CONTRIBUTING.md`
-- Additional materials: `docs/`
+- **API specifications**: [API.md](API.md)
+- Tutorial / guided walkthrough: [TUTORIAL.md](TUTORIAL.md)
+- Architecture / internals: [ARCHITECTURE.md](ARCHITECTURE.md)
+- Migration notes: [MIGRATION.md](MIGRATION.md)
+- Contributing guide: [CONTRIBUTING.md](CONTRIBUTING.md)
+- Additional materials: [docs/](docs/)
 
 ## Examples
 
-Examples live under `examples/`.
+Examples live under [examples/](examples/).
 
 ## License
 
