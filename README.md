@@ -89,13 +89,18 @@ users, err := secureRepo.FindAll()
 
 Note: property-level filtering is enforced by `SecureRepository` today; row-level rules are represented in metadata so you can apply consistent data-level predicates in your queries.
 
-## Examples and docs
+## Documentation
 
-- Examples live under `examples/`
-- Deep dives and references:
-  - `TUTORIAL.md`
-  - `API.md`
-  - `ARCHITECTURE.md`
+- **API specifications**: `API.md`
+- Tutorial / guided walkthrough: `TUTORIAL.md`
+- Architecture / internals: `ARCHITECTURE.md`
+- Migration notes: `MIGRATION.md`
+- Contributing guide: `CONTRIBUTING.md`
+- Additional materials: `docs/`
+
+## Examples
+
+Examples live under `examples/`.
 
 ## License
 
