@@ -429,6 +429,9 @@ func (s *Session) updateEntity(entity interface{}) error {
 
 	// Build MERGE query (acts as update) using Mapper
 	query, params, err := s.mapper.MapToMerge(entity)
+	if err != nil {
+		return err
+	}
 
 	// Execute query
 	_, err = s.graph.Query(query, params, nil)

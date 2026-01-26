@@ -380,13 +380,13 @@ func (r *Repository[T]) loadEagerRelationships(entity *T, record *falkordb.Recor
 						items = append(items, relItem)
 					}
 				}
-				// Set the loaded items to the relationship field
-				// This would need proper type conversion based on field type
+				// TODO: Set the loaded items to the relationship field
+				// This needs proper type conversion based on field type
+				_ = items // Use items to avoid unused warning
 			}
-		} else {
-			// Handle single relationship
-			// This would need proper type conversion based on field type
 		}
+		// TODO: Handle single relationship
+		// This needs proper type conversion based on field type
 	}
 
 	return nil

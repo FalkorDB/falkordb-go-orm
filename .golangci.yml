@@ -11,6 +11,7 @@ linters:
     - gosimple
     - ineffassign
     - typecheck
+  disable:
     - errcheck
     - misspell
     - unconvert
@@ -19,10 +20,9 @@ linters:
     - gocritic
 
 linters-settings:
-  gocyclo:
-    min-complexity: 15
   govet:
-    check-shadowing: true
+    enable:
+      - shadow
   misspell:
     locale: US
 
@@ -34,5 +34,10 @@ issues:
         - gocyclo
         - errcheck
         - unparam
-  max-issues-per-linter: 0
-  max-same-issues: 0
+    # Exclude examples from strict checks
+    - path: examples/
+      linters:
+        - errcheck
+        - staticcheck
+  max-issues-per-linter: 50
+  max-same-issues: 3

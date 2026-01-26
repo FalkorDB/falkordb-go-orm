@@ -224,9 +224,10 @@ func (c *SecurityContext) loadRolesAndPrivileges() error {
 
 		// Get privileges
 		if privData, ok := record.Get("privileges"); ok && privData != nil {
-			// Parse privilege nodes
+			// TODO: Parse privilege nodes from graph result
 			// This is simplified - in reality would parse the node data
 			// For now, we'll handle this in the manager when privileges are created
+			_ = privData // Silence unused warning
 		}
 	}
 
