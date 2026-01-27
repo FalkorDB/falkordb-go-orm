@@ -6,6 +6,7 @@ import (
 	"reflect"
 
 	falkordb "github.com/FalkorDB/falkordb-go/v2"
+	"github.com/falkordb/falkordb-go-orm/examples/internal/ciutil"
 	"github.com/falkordb/falkordb-go-orm/orm"
 )
 
@@ -94,12 +95,15 @@ func main() {
 	}
 	fmt.Println()
 
-	// Example 3: Connect to FalkorDB and execute (requires running FalkorDB)
-	fmt.Println("4. Connecting to FalkorDB (optional - requires running instance)...")
+	// Example 3: Connect to FalkorDB and execute
+	fmt.Println("4. Connecting to FalkorDB...")
 	db, err := falkordb.FalkorDBNew(&falkordb.ConnectionOption{
-		Addr: "localhost:6379",
+		Addr: ciutil.Addr(),
 	})
 	if err != nil {
+		if ciutil.RequireDB() {
+			log.Fatalf("Could not connect to FalkorDB at %s: %v", ciutil.Addr(), err)
+		}
 		fmt.Printf("   ⚠ Could not connect to FalkorDB: %v\n", err)
 		fmt.Println("   This is expected if FalkorDB is not running.")
 		fmt.Println("\n5. Phase 1 demonstration complete!")
@@ -108,6 +112,9 @@ func main() {
 
 	graph := db.SelectGraph("orm_example")
 	fmt.Println("   ✓ Connected to FalkorDB")
+
+	// Clean up previous runs to keep the example idempotent
+	_, _ = graph.Query("MATCH (n) DELETE n", nil, nil)
 
 	// Execute CREATE for Alice
 	fmt.Println("5. Executing CREATE query for Alice...")
@@ -162,7 +169,7 @@ func main() {
 	fmt.Printf("   ✓ Updated person (affected %d nodes)\n", result3.NodesCreated()+result3.NodesDeleted())
 	fmt.Println()
 
-	// Example 5: Read back from graph
+	// Example 5: Read back from graph (verification)
 	fmt.Println("8. Reading back person from graph...")
 	readCypher := fmt.Sprintf("MATCH (n:%s) WHERE id(n) = $id RETURN n", "Person")
 	readParams := map[string]interface{}{"id": *alice.ID}
@@ -172,21 +179,29 @@ func main() {
 		log.Fatal("Failed to read person:", err)
 	}
 
-	if readResult.Next() {
-		record := readResult.Record()
-		readPerson, err := mapper.MapFromRecord(record, reflect.TypeOf(Person{}), "n")
-		if err != nil {
-			log.Fatal("Failed to map person from record:", err)
-		}
-
-		p := readPerson.(*Person)
-		fmt.Printf("   ✓ Read person from graph:\n")
-		fmt.Printf("     ID: %d\n", *p.ID)
-		fmt.Printf("     Name: %s\n", p.Name)
-		fmt.Printf("     Email: %s\n", p.Email)
-		fmt.Printf("     Age: %d\n", p.Age)
-		fmt.Printf("     Country: %s\n", p.Country)
+	if !readResult.Next() {
+		log.Fatal("Expected to read back Alice, but query returned no rows")
 	}
+
+	record := readResult.Record()
+	readPerson, err := mapper.MapFromRecord(record, reflect.TypeOf(Person{}), "n")
+	if err != nil {
+		log.Fatal("Failed to map person from record:", err)
+	}
+
+	p := readPerson.(*Person)
+	ciutil.Check(p.ID != nil && *p.ID == *alice.ID, "expected ID %d, got %v", *alice.ID, p.ID)
+	ciutil.Check(p.Name == alice.Name, "expected Name %q, got %q", alice.Name, p.Name)
+	ciutil.Check(p.Email == alice.Email, "expected Email %q, got %q", alice.Email, p.Email)
+	ciutil.Check(p.Age == alice.Age, "expected Age %d, got %d", alice.Age, p.Age)
+	ciutil.Check(p.Country == alice.Country, "expected Country %q, got %q", alice.Country, p.Country)
+
+	fmt.Printf("   ✓ Read person from graph:\n")
+	fmt.Printf("     ID: %d\n", *p.ID)
+	fmt.Printf("     Name: %s\n", p.Name)
+	fmt.Printf("     Email: %s\n", p.Email)
+	fmt.Printf("     Age: %d\n", p.Age)
+	fmt.Printf("     Country: %s\n", p.Country)
 	fmt.Println()
 
 	fmt.Println("✅ Phase 1 demonstration complete!")

@@ -2,9 +2,11 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"reflect"
 
 	falkordb "github.com/FalkorDB/falkordb-go/v2"
+	"github.com/falkordb/falkordb-go-orm/examples/internal/ciutil"
 	"github.com/falkordb/falkordb-go-orm/orm"
 	"github.com/falkordb/falkordb-go-orm/security"
 )
@@ -31,9 +33,12 @@ func main() {
 	// 1. Connect to FalkorDB
 	fmt.Println("1. Connecting to FalkorDB...")
 	db, err := falkordb.FalkorDBNew(&falkordb.ConnectionOption{
-		Addr: "localhost:6379",
+		Addr: ciutil.Addr(),
 	})
 	if err != nil {
+		if ciutil.RequireDB() {
+			log.Fatalf("Could not connect to FalkorDB at %s: %v", ciutil.Addr(), err)
+		}
 		fmt.Printf("   ⚠ Could not connect to FalkorDB: %v\n", err)
 		fmt.Println("   Please start FalkorDB to run this example.")
 		return
@@ -81,36 +86,71 @@ func main() {
 
 	// 6. Create roles
 	fmt.Println("6. Creating roles...")
-	_, _ = manager.CreateRole("reader", "Can read basic employee info", false)
-	_, _ = manager.CreateRole("hr", "HR staff with salary access", false)
-	_, _ = manager.CreateRole("admin", "Full access", true)
+	if _, err := manager.CreateRole("reader", "Can read basic employee info", false); err != nil {
+		log.Fatal(err)
+	}
+	if _, err := manager.CreateRole("hr", "HR staff with salary access", false); err != nil {
+		log.Fatal(err)
+	}
+	if _, err := manager.CreateRole("admin", "Full access", true); err != nil {
+		log.Fatal(err)
+	}
 	fmt.Printf("   ✓ Created 3 roles (reader, hr, admin)\n\n")
 
 	// 7. Create users
 	fmt.Println("7. Creating users...")
-	alice, _ := manager.CreateUser("alice", "alice@company.com")
-	bob, _ := manager.CreateUser("bob", "bob@company.com")
-	charlie, _ := manager.CreateUser("charlie", "charlie@company.com")
+	alice, err := manager.CreateUser("alice", "alice@company.com")
+	if err != nil {
+		log.Fatal(err)
+	}
+	bob, err := manager.CreateUser("bob", "bob@company.com")
+	if err != nil {
+		log.Fatal(err)
+	}
+	charlie, err := manager.CreateUser("charlie", "charlie@company.com")
+	if err != nil {
+		log.Fatal(err)
+	}
 	fmt.Printf("   ✓ Created 3 users (alice, bob, charlie)\n\n")
 
 	// 8. Assign roles
 	fmt.Println("8. Assigning roles...")
-	manager.AssignRole("alice", "reader")
-	manager.AssignRole("bob", "hr")
-	manager.AssignRole("charlie", "admin")
+	if err := manager.AssignRole("alice", "reader"); err != nil {
+		log.Fatal(err)
+	}
+	if err := manager.AssignRole("bob", "hr"); err != nil {
+		log.Fatal(err)
+	}
+	if err := manager.AssignRole("charlie", "admin"); err != nil {
+		log.Fatal(err)
+	}
 	fmt.Println("   ✓ alice: reader")
 	fmt.Println("   ✓ bob: hr")
 	fmt.Println("   ✓ charlie: admin")
 
 	// 9. Grant privileges
 	fmt.Println("9. Granting privileges...")
-	manager.GrantPrivilege("reader", security.ActionRead, security.ResourceTypeNode, "Employee")
-	manager.GrantPrivilege("hr", security.ActionRead, security.ResourceTypeNode, "Employee")
-	manager.GrantPrivilege("hr", security.ActionWrite, security.ResourceTypeNode, "Employee")
-	manager.GrantPrivilege("admin", security.ActionRead, security.ResourceTypeNode, "*")
-	manager.GrantPrivilege("admin", security.ActionWrite, security.ResourceTypeNode, "*")
-	manager.GrantPrivilege("admin", security.ActionCreate, security.ResourceTypeNode, "*")
-	manager.GrantPrivilege("admin", security.ActionDelete, security.ResourceTypeNode, "*")
+	if err := manager.GrantPrivilege("reader", security.ActionRead, security.ResourceTypeNode, "Employee"); err != nil {
+		log.Fatal(err)
+	}
+	if err := manager.GrantPrivilege("hr", security.ActionRead, security.ResourceTypeNode, "Employee"); err != nil {
+		log.Fatal(err)
+	}
+	if err := manager.GrantPrivilege("hr", security.ActionWrite, security.ResourceTypeNode, "Employee"); err != nil {
+		log.Fatal(err)
+	}
+	if err := manager.GrantPrivilege("admin", security.ActionRead, security.ResourceTypeNode, "*"); err != nil {
+		log.Fatal(err)
+	}
+	if err := manager.GrantPrivilege("admin", security.ActionWrite, security.ResourceTypeNode, "*"); err != nil {
+		log.Fatal(err)
+	}
+	if err := manager.GrantPrivilege("admin", security.ActionCreate, security.ResourceTypeNode, "*"); err != nil {
+		log.Fatal(err)
+	}
+	if err := manager.GrantPrivilege("admin", security.ActionDelete, security.ResourceTypeNode, "*"); err != nil {
+		log.Fatal(err)
+	}
 	fmt.Println("   ✓ Privileges granted to roles")
 
 	// 10. Create sample employees (as admin)
@@ -123,8 +163,12 @@ func main() {
 		{Name: "Mike Johnson", Email: "mike@company.com", Position: "Developer", Salary: 75000, SSN: "555-12-3456", Department: "Engineering"},
 	}
 
-	saved, _ := employeeRepo.SaveAll(employees)
+	saved, err := employeeRepo.SaveAll(employees)
+	if err != nil {
+		log.Fatal(err)
+	}
 	fmt.Printf("   ✓ Created %d employees\n\n", len(saved))
+	ciutil.Check(len(saved) == 3, "expected 3 saved employees, got %d", len(saved))
 
 	// 11. Demonstrate security contexts
 	fmt.Println("11. Testing security with different user contexts...")

@@ -6,6 +6,7 @@ import (
 	"reflect"
 
 	falkordb "github.com/FalkorDB/falkordb-go/v2"
+	"github.com/falkordb/falkordb-go-orm/examples/internal/ciutil"
 	"github.com/falkordb/falkordb-go-orm/orm"
 )
 
@@ -43,9 +44,12 @@ func main() {
 	// Connect to FalkorDB
 	fmt.Println("1. Connecting to FalkorDB...")
 	db, err := falkordb.FalkorDBNew(&falkordb.ConnectionOption{
-		Addr: "localhost:6379",
+		Addr: ciutil.Addr(),
 	})
 	if err != nil {
+		if ciutil.RequireDB() {
+			log.Fatalf("Could not connect to FalkorDB at %s: %v", ciutil.Addr(), err)
+		}
 		fmt.Printf("   ⚠ Could not connect to FalkorDB: %v\n", err)
 		fmt.Println("   Please start FalkorDB to run this example.")
 		return

@@ -5,6 +5,7 @@ import (
 	"log"
 
 	falkordb "github.com/FalkorDB/falkordb-go/v2"
+	"github.com/falkordb/falkordb-go-orm/examples/internal/ciutil"
 	"github.com/falkordb/falkordb-go-orm/orm"
 )
 
@@ -28,9 +29,12 @@ func main() {
 	// Connect to FalkorDB
 	fmt.Println("1. Connecting to FalkorDB...")
 	db, err := falkordb.FalkorDBNew(&falkordb.ConnectionOption{
-		Addr: "localhost:6379",
+		Addr: ciutil.Addr(),
 	})
 	if err != nil {
+		if ciutil.RequireDB() {
+			log.Fatalf("Could not connect to FalkorDB at %s: %v", ciutil.Addr(), err)
+		}
 		fmt.Printf("   ⚠ Could not connect to FalkorDB: %v\n", err)
 		fmt.Println("   Please start FalkorDB to run this example.")
 		return
@@ -190,8 +194,12 @@ func main() {
 	fmt.Printf("   ✓ Deleted Charlie\n\n")
 
 	// Verify deletion
-	afterDeleteCount, _ := repo.Count()
+	afterDeleteCount, err := repo.Count()
+	if err != nil {
+		log.Fatal("Failed to count after delete:", err)
+	}
 	fmt.Printf("   Count after deletion: %d\n\n", afterDeleteCount)
+	ciutil.Check(afterDeleteCount == finalCount-1, "expected count after delete to be %d, got %d", finalCount-1, afterDeleteCount)
 
 	fmt.Println("✅ Phase 2 demonstration complete!")
 	fmt.Println("\nRepository Pattern Features Demonstrated:")

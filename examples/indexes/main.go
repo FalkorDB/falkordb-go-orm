@@ -2,10 +2,12 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"reflect"
 	"time"
 
 	falkordb "github.com/FalkorDB/falkordb-go/v2"
+	"github.com/falkordb/falkordb-go-orm/examples/internal/ciutil"
 	"github.com/falkordb/falkordb-go-orm/orm"
 )
 
@@ -44,9 +46,12 @@ func main() {
 	// 1. Connect to FalkorDB
 	fmt.Println("1. Connecting to FalkorDB...")
 	db, err := falkordb.FalkorDBNew(&falkordb.ConnectionOption{
-		Addr: "localhost:6379",
+		Addr: ciutil.Addr(),
 	})
 	if err != nil {
+		if ciutil.RequireDB() {
+			log.Fatalf("Could not connect to FalkorDB at %s: %v", ciutil.Addr(), err)
+		}
 		fmt.Printf("   ⚠ Could not connect to FalkorDB: %v\n", err)
 		fmt.Println("   Please start FalkorDB to run this example.")
 		return
@@ -82,6 +87,9 @@ func main() {
 		for _, err := range validationResult.Errors {
 			fmt.Printf("      - %v\n", err)
 		}
+		if ciutil.RequireDB() {
+			log.Fatal("schema validation failed")
+		}
 	}
 	fmt.Println()
 
@@ -91,6 +99,9 @@ func main() {
 
 	err = indexManager.CreateIndexes(reflect.TypeOf(Product{}), true)
 	if err != nil {
+		if ciutil.RequireDB() {
+			log.Fatalf("error creating Product indexes: %v", err)
+		}
 		fmt.Printf("   ⚠ Error creating Product indexes: %v\n", err)
 	} else {
 		fmt.Println("   ✓ Created indexes for Product")
@@ -102,6 +113,9 @@ func main() {
 
 	err = indexManager.CreateIndexes(reflect.TypeOf(Customer{}), true)
 	if err != nil {
+		if ciutil.RequireDB() {
+			log.Fatalf("error creating Customer indexes: %v", err)
+		}
 		fmt.Printf("   ⚠ Error creating Customer indexes: %v\n", err)
 	} else {
 		fmt.Println("   ✓ Created indexes for Customer")
@@ -164,6 +178,9 @@ func main() {
 		reflect.TypeOf(Customer{}),
 	})
 	if err != nil {
+		if ciutil.RequireDB() {
+			log.Fatalf("schema sync failed: %v", err)
+		}
 		fmt.Printf("   ⚠ Schema sync encountered issues: %v\n", err)
 	} else {
 		fmt.Println("   ✓ Schema synchronized (indexes ensured)")
