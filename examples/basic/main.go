@@ -129,6 +129,14 @@ func main() {
 		mapper.UpdateEntityID(alice, nodeID)
 		fmt.Printf("   ✓ Created person with ID: %d\n", *alice.ID)
 	}
+
+	// MapToMerge currently uses a property match (MERGE ... {id: $id}).
+	// Persist the generated ID into the node's `id` property so subsequent MERGE updates match the same node.
+	_, err = graph.Query("MATCH (n:Person) WHERE id(n) = $id SET n.id = $id", map[string]interface{}{"id": *alice.ID}, nil)
+	if err != nil {
+		log.Fatal("Failed to persist generated id property:", err)
+	}
+
 	fmt.Println()
 
 	// Execute CREATE for Company
