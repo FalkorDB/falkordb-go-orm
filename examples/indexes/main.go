@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"reflect"
+	"strings"
 	"time"
 
 	falkordb "github.com/FalkorDB/falkordb-go/v2"
@@ -178,7 +179,9 @@ func main() {
 		reflect.TypeOf(Customer{}),
 	})
 	if err != nil {
-		if ciutil.RequireDB() {
+		// SyncSchema may attempt to (re)create indexes that were already created above.
+		// Treat "already indexed" as non-fatal so the example remains idempotent in CI.
+		if ciutil.RequireDB() && !strings.Contains(err.Error(), "already indexed") {
 			log.Fatalf("schema sync failed: %v", err)
 		}
 		fmt.Printf("   ⚠ Schema sync encountered issues: %v\n", err)
