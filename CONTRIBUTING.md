@@ -217,7 +217,7 @@ With core features complete, we welcome contributions in:
 
 ## Communication
 
-- Join the [FalkorDB Discord](https://discord.gg/falkordb)
+- Join the [FalkorDB Discord](https://discord.gg/6M4QwDXn2w)
 - Use GitHub Issues for bug reports and feature requests
 - Use Pull Requests for code contributions
 

@@ -10,7 +10,7 @@ This project sits on top of the official `falkordb-go` client and adds:
 
 [![Go Version](https://img.shields.io/badge/Go-1.21+-00ADD8?style=flat&logo=go)](https://go.dev)
 [![FalkorDB](https://img.shields.io/badge/FalkorDB-Compatible-green)](https://falkordb.com)
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](LICENSE)
 
 ## What you get
 
@@ -104,4 +104,4 @@ Examples live under [examples/](examples/).
 
 ## License
 
-MIT — see `LICENSE`.
+BSD 3-Clause — see [LICENSE](LICENSE).
